@@ -1,0 +1,26 @@
+---
+- name: exemple de playbook
+  hosts: exemple
+  remote_user: client
+  become: true
+  tasks:
+        - name: install apache2
+          apt:
+              name: apache2
+              update_cache: yes
+              state: latest
+        - name: aneble mod_rewrite
+          apache2_module:
+                         name: rewrite
+                         state: present
+          notify:
+                 - restart apache2
+        - name: creer notre page propre
+          copy:
+               content: "<h1>Success</h1>Notre tutoriel a reussi"
+               dest: /var/www/html/index.html
+  handlers:
+        - name: restart apache2
+          service:
+                 name=apache2
+                 state=restarted
